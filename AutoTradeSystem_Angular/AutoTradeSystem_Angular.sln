@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.9.34622.214
+VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "AutoTradeSystem_Angular", "AutoTradeSystem_Angular\AutoTradeSystem_Angular.esproj", "{5166EC33-E175-43B5-B7AA-F9FE500935DA}"
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "AutoTradeSystem_Angular", "AutoTradeSystem_Angular\AutoTradeSystem_Angular.esproj", "{FC76D270-B75C-4C2E-8508-7D1C5D0D26C7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,17 +11,17 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5166EC33-E175-43B5-B7AA-F9FE500935DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5166EC33-E175-43B5-B7AA-F9FE500935DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5166EC33-E175-43B5-B7AA-F9FE500935DA}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{5166EC33-E175-43B5-B7AA-F9FE500935DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5166EC33-E175-43B5-B7AA-F9FE500935DA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5166EC33-E175-43B5-B7AA-F9FE500935DA}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{FC76D270-B75C-4C2E-8508-7D1C5D0D26C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC76D270-B75C-4C2E-8508-7D1C5D0D26C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC76D270-B75C-4C2E-8508-7D1C5D0D26C7}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{FC76D270-B75C-4C2E-8508-7D1C5D0D26C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC76D270-B75C-4C2E-8508-7D1C5D0D26C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC76D270-B75C-4C2E-8508-7D1C5D0D26C7}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {1EA4C362-4A6B-4E61-874D-6BB6AAA3330F}
+		SolutionGuid = {09C9542D-9F82-4372-B619-41EE32A37676}
 	EndGlobalSection
 EndGlobal
