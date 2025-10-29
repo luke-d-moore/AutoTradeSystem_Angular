@@ -19,7 +19,7 @@ export interface Order {
   imports: [CommonModule, LayoutComponent, OrderFormComponent, OrdersTableComponent],
   template: `
     <app-layout>
-      <h1>Trading Order System</h1>
+      <h1>AutoTradeSystem</h1>
       <app-order-form (orderSubmitted)="handleNewOrder($event)"></app-order-form>
       <app-orders-table [orders]="orders"></app-orders-table>
     </app-layout>

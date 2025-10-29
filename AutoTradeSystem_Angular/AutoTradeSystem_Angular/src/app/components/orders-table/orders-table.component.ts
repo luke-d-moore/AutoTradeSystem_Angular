@@ -8,7 +8,7 @@ import { Order } from '../../app.component';
   imports: [CommonModule],
   template: `
     <section class="orders-section">
-      <h2>Past Orders</h2>
+      <h2>Current Strategies</h2>
       @if (orders.length === 0) {
         <p>No orders have been placed yet.</p>
       } @else {

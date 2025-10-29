@@ -35,7 +35,12 @@
               }
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "src/app/app.component.css",
+              "src/app/components/layout/layout.component.css",
+              "src/app/components/market-prices/market-prices.component.css",
+              "src/app/components/order-form/order-form.component.css",
+              "src/app/components/orders-table/orders-table.component.css"
             ]
           },
           "configurations": {
