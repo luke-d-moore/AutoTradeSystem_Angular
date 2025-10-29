@@ -9,7 +9,7 @@ import { Order } from '../../app.component';
   imports: [CommonModule, ReactiveFormsModule],
   template: `
     <section class="form-section">
-      <h2>Add New Strategy</h2>
+      <h2>Add New Trading Strategy</h2>
       <form [formGroup]="orderForm" (ngSubmit)="handleSubmit()" class="order-form">
         <div class="form-field">
           <label for="ticker">Ticker</label>
