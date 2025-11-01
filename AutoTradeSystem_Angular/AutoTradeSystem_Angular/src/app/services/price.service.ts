@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { PriceData } from '../components/market-prices/market-prices.component';
 
-const API_URL = 'https://localhost:44351/api/Price';
+const API_URL = 'https://localhost:7250/api/Price/GetAllPrices';
 
 @Injectable({
   providedIn: 'root'

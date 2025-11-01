@@ -50,7 +50,7 @@ export class MarketPricesComponent implements OnInit, OnDestroy {
   constructor(private priceService: PriceService) { }
 
   ngOnInit(): void {
-    this.priceData$ = timer(0, 60000).pipe(
+    this.priceData$ = timer(0, 5000).pipe(
       switchMap(() => this.priceService.getPrices()),
       catchError(err => {
         this.error.set(err.message);
