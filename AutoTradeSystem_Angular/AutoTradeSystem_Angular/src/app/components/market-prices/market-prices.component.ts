@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PriceService } from '../../services/price.service';
-import { Observable, Subscription, timer, switchMap, catchError, of } from 'rxjs';
+import { Subscription, timer, switchMap, catchError, of } from 'rxjs';
 
 export interface PriceData {
   [ticker: string]: number;
@@ -18,23 +18,27 @@ export interface PriceData {
         <p>Loading market prices...</p>
       } @else if (error()) {
         <p class="error-message">Error fetching prices: {{ error() }}</p>
+        <p class="no-data-message">Automatic retry in 5 seconds...</p>
       } @else {
-        <table class="prices-table">
-          <thead>
-            <tr>
-              <th>Ticker</th>
-              <th>Price</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (item of priceEntries(); track item[0]) {
+        <!-- Display table when we have data and no current error -->
+        @if (priceEntries().length > 0) {
+          <table class="prices-table">
+            <thead>
               <tr>
-                <td>{{ item[0] }}</td>
-                <td>\${{ item[1] | number:'1.2-2' }}</td>
+                <th>Ticker</th>
+                <th>Price</th>
               </tr>
-            }
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              @for (item of priceEntries(); track item[0]) {
+                <tr>
+                  <td>{{ item[0] }}</td>
+                  <td>\${{ item[1] | number:'1.2-2' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
       }
     </section>
   `,
@@ -42,7 +46,7 @@ export interface PriceData {
 })
 export class MarketPricesComponent implements OnInit, OnDestroy {
   private subscription?: Subscription;
-  priceData$!: Observable<PriceData>;
+
   loading = signal(true);
   error = signal<string | null>(null);
   priceEntries = signal<[string, number][]>([]);
@@ -50,15 +54,28 @@ export class MarketPricesComponent implements OnInit, OnDestroy {
   constructor(private priceService: PriceService) { }
 
   ngOnInit(): void {
-    this.priceData$ = timer(0, 5000).pipe(
-      switchMap(() => this.priceService.getPrices()),
-      catchError(err => {
-        this.error.set(err.message);
-        return of({});
-      })
-    );
+    const defaultPrices: PriceData = {};
 
-    this.subscription = this.priceData$.subscribe(data => {
+    // The outer timer drives the polling interval
+    this.subscription = timer(0, 5000).pipe(
+      switchMap(() => {
+        // Clear any previous error and set loading state before each new attempt
+        this.error.set(null);
+        this.loading.set(true);
+
+        // This inner observable handles the API call and potential errors
+        return this.priceService.getPrices().pipe(
+          catchError(err => {
+            // Set the error signal to display the error message
+            this.error.set(err.message || 'Failed to retrieve prices');
+            // Return the safe default value. The outer stream continues running.
+            return of(defaultPrices);
+          })
+        );
+      })
+      // We subscribe here to process the emissions from the stream
+    ).subscribe(data => {
+      // This block executes for every successful response OR every default value returned after an error
       this.priceEntries.set(Object.entries(data));
       this.loading.set(false);
     });
