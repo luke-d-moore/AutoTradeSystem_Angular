@@ -14,9 +14,7 @@ export interface PriceData {
   template: `
     <section class="prices-section">
       <h2>Live Market Prices</h2>
-      @if (loading()) {
-        <p>Loading market prices...</p>
-      } @else if (error()) {
+      @if (error()) {
         <p class="error-message">Error fetching prices: {{ error() }}</p>
         <p class="no-data-message">Automatic retry in 5 seconds...</p>
       } @else {
@@ -47,7 +45,6 @@ export interface PriceData {
 export class MarketPricesComponent implements OnInit, OnDestroy {
   private subscription?: Subscription;
 
-  loading = signal(true);
   error = signal<string | null>(null);
   priceEntries = signal<[string, number][]>([]);
 
@@ -61,7 +58,6 @@ export class MarketPricesComponent implements OnInit, OnDestroy {
       switchMap(() => {
         // Clear any previous error and set loading state before each new attempt
         this.error.set(null);
-        this.loading.set(true);
 
         // This inner observable handles the API call and potential errors
         return this.priceService.getPrices().pipe(
@@ -77,7 +73,6 @@ export class MarketPricesComponent implements OnInit, OnDestroy {
     ).subscribe(data => {
       // This block executes for every successful response OR every default value returned after an error
       this.priceEntries.set(Object.entries(data));
-      this.loading.set(false);
     });
   }
 
