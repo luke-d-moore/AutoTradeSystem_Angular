@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PriceService } from '../../services/price.service';
-import { Subscription, timer, switchMap, catchError, of } from 'rxjs';
+import { Subscription, timer, switchMap, catchError, of, NEVER } from 'rxjs';
 
 export interface PriceData {
   [ticker: string]: number;
@@ -15,11 +15,9 @@ export interface PriceData {
     <section class="prices-section">
       <h2>Live Market Prices</h2>
       @if (error()) {
-        <p class="error-message">Error fetching prices: {{ error() }}</p>
-        <p class="no-data-message">Automatic retry in 5 seconds...</p>
-      } @else {
-        <!-- Display table when we have data and no current error -->
-        @if (priceEntries().length > 0) {
+        <p class="error-message">Error getting latest prices</p>
+        <p class="no-data-message">Automatic retry in 5 seconds</p>
+      }
           <table class="prices-table">
             <thead>
               <tr>
@@ -36,8 +34,6 @@ export interface PriceData {
               }
             </tbody>
           </table>
-        }
-      }
     </section>
   `,
   styleUrl: './market-prices.component.css'
@@ -64,8 +60,9 @@ export class MarketPricesComponent implements OnInit, OnDestroy {
           catchError(err => {
             // Set the error signal to display the error message
             this.error.set(err.message || 'Failed to retrieve prices');
+            console.log(err.message);
             // Return the safe default value. The outer stream continues running.
-            return of(defaultPrices);
+            return NEVER;
           })
         );
       })
