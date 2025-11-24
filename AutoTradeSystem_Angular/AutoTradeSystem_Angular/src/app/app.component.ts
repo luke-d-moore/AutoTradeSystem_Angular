@@ -21,9 +21,8 @@ export interface Order {
     <app-layout>
       <h1>AutoTradeSystem</h1>
       <app-order-form (orderSubmitted)="handleNewOrder($event)"></app-order-form>
-      <app-orders-table [orders]="orders"></app-orders-table>
-    </app-layout>
-  `,
+      <app-orders-table></app-orders-table>
+    </app-layout>`,
   styleUrl: './app.component.css'
 })
 export class AppComponent {
