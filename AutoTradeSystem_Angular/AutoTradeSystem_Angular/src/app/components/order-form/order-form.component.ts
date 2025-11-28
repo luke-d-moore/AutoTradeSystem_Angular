@@ -22,8 +22,8 @@ import { TradingStrategiesService, Strategy, PostStrategyResponse } from '../../
         <div class="form-field">
           <label for="type">Type</label>
           <select id="type" formControlName="type">
-            <option value="buy">Buy</option>
-            <option value="sell">Sell</option>
+            <option value="0">Buy</option>
+            <option value="1">Sell</option>
           </select>
         </div>
         <div class="form-field">
@@ -37,6 +37,9 @@ import { TradingStrategiesService, Strategy, PostStrategyResponse } from '../../
       <div *ngIf="errorMessage" class="error-message">
         {{errorMessage}}
       </div>
+      <div *ngIf="successMessage" class="success-message">
+        {{successMessage}}
+      </div>
     </section>
   `,
   styleUrl: './order-form.component.css'
@@ -44,6 +47,7 @@ import { TradingStrategiesService, Strategy, PostStrategyResponse } from '../../
 export class OrderFormComponent {
   orderForm: FormGroup;
   errorMessage: string | null = null; 
+  successMessage: string | null = null; 
 
   constructor(
     private fb: FormBuilder,
@@ -52,7 +56,7 @@ export class OrderFormComponent {
     this.orderForm = this.fb.group({
       ticker: ['', Validators.required],
       amount: [null, [Validators.required, Validators.min(0)]],
-      type: ['buy'],
+      type: [0],
       threshold: [null, [Validators.required, Validators.min(0)]],
     });
   }
@@ -60,19 +64,21 @@ export class OrderFormComponent {
   handleSubmit(): void {
     if (this.orderForm.valid) {
       this.errorMessage = null; 
+      this.successMessage = null; 
       const formValues = this.orderForm.value;
 
       const newStrategy: Strategy = {
         Ticker: formValues.ticker,
         Quantity: formValues.amount, 
-        TradeAction: formValues.type === 'buy' ? 0 : 1,
+        TradeAction: formValues.type,
         PriceChange: formValues.threshold,
       };
 
       this.strategiesService.postStrategy(newStrategy).subscribe({
         next: (response) => {
           console.log('Post successful:', response)
-          this.orderForm.reset({ type: 'buy' })
+          this.successMessage = `Strategy Submitted Successfully`
+          this.orderForm.reset({ type: 0 })
         },
         error: (err) => {
           console.error('Post failed:', err.message)

@@ -7,3 +7,13 @@
   margin-top: 15px;
   font-weight: bold;
 }
+
+.success-message {
+  color: #168d16;
+  background-color: #d6ffd6;
+  border: 1px solid #4aa84a;
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 15px;
+  font-weight: bold;
+}
