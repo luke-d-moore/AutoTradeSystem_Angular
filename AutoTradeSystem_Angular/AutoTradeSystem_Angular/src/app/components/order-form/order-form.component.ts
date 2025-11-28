@@ -22,8 +22,8 @@ import { TradingStrategiesService, Strategy, PostStrategyResponse } from '../../
         <div class="form-field">
           <label for="type">Type</label>
           <select id="type" formControlName="type">
-            <option value="0">Buy</option>
-            <option value="1">Sell</option>
+            <option [ngValue]="0">Buy</option>
+            <option [ngValue]="1">Sell</option>
           </select>
         </div>
         <div class="form-field">
