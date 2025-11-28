@@ -1,7 +1,7 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Order } from '../../app.component';
+import { TradingStrategiesService, Strategy, PostStrategyResponse } from '../../services/tradingstrategy.service';
 
 @Component({
   selector: 'app-order-form',
@@ -34,15 +34,21 @@ import { Order } from '../../app.component';
           <button type="submit" [disabled]="orderForm.invalid">Submit Order</button>
         </div>
       </form>
+      <div *ngIf="errorMessage" class="error-message">
+        {{errorMessage}}
+      </div>
     </section>
   `,
   styleUrl: './order-form.component.css'
 })
 export class OrderFormComponent {
-  @Output() orderSubmitted = new EventEmitter<Omit<Order, 'id' | 'date'>>();
   orderForm: FormGroup;
+  errorMessage: string | null = null; 
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private strategiesService: TradingStrategiesService
+  ) {
     this.orderForm = this.fb.group({
       ticker: ['', Validators.required],
       amount: [null, [Validators.required, Validators.min(0)]],
@@ -53,8 +59,26 @@ export class OrderFormComponent {
 
   handleSubmit(): void {
     if (this.orderForm.valid) {
-      this.orderSubmitted.emit(this.orderForm.value);
-      this.orderForm.reset({ type: 'buy' }); // Reset the form with default 'buy' value
+      this.errorMessage = null; 
+      const formValues = this.orderForm.value;
+
+      const newStrategy: Strategy = {
+        Ticker: formValues.ticker,
+        Quantity: formValues.amount, 
+        TradeAction: formValues.type === 'buy' ? 0 : 1,
+        PriceChange: formValues.threshold,
+      };
+
+      this.strategiesService.postStrategy(newStrategy).subscribe({
+        next: (response) => {
+          console.log('Post successful:', response)
+          this.orderForm.reset({ type: 'buy' })
+        },
+        error: (err) => {
+          console.error('Post failed:', err.message)
+          this.errorMessage = `Failed to submit Strategy`;
+        },
+      });      
     }
   }
 }

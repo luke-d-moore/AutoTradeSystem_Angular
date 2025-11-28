@@ -28,6 +28,18 @@ interface Order {
   threshold: string;
 }
 
+export interface Strategy {
+  Ticker: string;
+  Quantity: number;
+  TradeAction: number;
+  PriceChange: number;
+}
+
+export interface PostStrategyResponse {
+  success: boolean;
+  message: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -41,9 +53,8 @@ export class TradingStrategiesService {
     return timer(0, this.POLLING_INTERVAL).pipe(
       switchMap(() => this.http.get<StrategyApiResponse>(this.API_URL)),
       map(response => {
-        // Handle cases where the API returns a response but the strategies are null, undefined, or an empty object
         if (!response.success || !response.TradingStrategies || Object.keys(response.TradingStrategies).length === 0) {
-          return []; // Return an empty array if no strategies are found
+          return [];
         }
 
         return Object.entries(response.TradingStrategies).map(([id, strategyDetails]) => {
@@ -62,10 +73,27 @@ export class TradingStrategiesService {
           };
         });
       }),
-      // Use catchError to handle any HTTP errors or map-related errors
       catchError((error: HttpErrorResponse) => {
         console.error('An error occurred during API call:', error);
-        return of([]); // Return an empty observable array to prevent the stream from breaking
+        return of([]);
+      })
+    );
+  }
+
+  postStrategy(strategy: Strategy): Observable<PostStrategyResponse> {
+    return this.http.post<PostStrategyResponse>(this.API_URL, strategy).pipe(
+      map(response => {
+        if (!response.success) {
+          throw new Error(response.message || 'Strategy submission failed on server.');
+        }
+        return response;
+      }),
+      catchError((error: HttpErrorResponse | Error) => {
+        console.error('An error occurred during API POST call:', error);
+        const userMessage = (error instanceof HttpErrorResponse)
+          ? 'Network error occurred.'
+          : error.message;
+        return throwError(() => new Error(userMessage));
       })
     );
   }
