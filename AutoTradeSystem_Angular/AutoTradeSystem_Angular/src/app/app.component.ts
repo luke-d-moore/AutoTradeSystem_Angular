@@ -13,8 +13,7 @@ import { OrdersTableComponent } from './components/orders-table/orders-table.com
       <h1>AutoTradeSystem</h1>
       <app-order-form/>
       <app-orders-table/>
-    </app-layout>`,
-  styleUrl: './app.component.css'
+    </app-layout>`
 })
 export class AppComponent {
   title = 'AutoTradeSystem';
