@@ -17,4 +17,12 @@
     background-color: #4CAF50;
   }
 
+/* Alternating row colors */
+.prices-table tr.even-row {
+  background-color: #f9f9f9;
+}
+
+.prices-table tr.odd-row {
+  background-color: #e6e6e6;
+}
 

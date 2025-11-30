@@ -18,6 +18,7 @@ export interface PriceData {
         <p class="error-message">Error getting latest prices</p>
         <p class="no-data-message">Automatic retry in 5 seconds</p>
       }
+          <p *ngIf="lastUpdated" > Last updated: {{ lastUpdated | date: 'mediumTime' }}</p>
           <table class="prices-table">
             <thead>
               <tr>
@@ -26,8 +27,10 @@ export interface PriceData {
               </tr>
             </thead>
             <tbody>
-              @for (item of priceEntries(); track item[0]) {
-                <tr>
+              @for (item of priceEntries(); track item[0]; let i = $index) {
+                <tr
+                  [class.even-row]="i % 2 === 0"
+                  [class.odd-row]="i % 2 !== 0">
                   <td>{{ item[0] }}</td>
                   <td>\${{ item[1] | number:'1.2-2' }}</td>
                 </tr>
@@ -43,6 +46,7 @@ export class MarketPricesComponent implements OnInit, OnDestroy {
 
   error = signal<string | null>(null);
   priceEntries = signal<[string, number][]>([]);
+  lastUpdated: Date | null = null;
 
   constructor(private priceService: PriceService) { }
 
@@ -70,6 +74,7 @@ export class MarketPricesComponent implements OnInit, OnDestroy {
     ).subscribe(data => {
       // This block executes for every successful response OR every default value returned after an error
       this.priceEntries.set(Object.entries(data));
+      this.lastUpdated = new Date();
     });
   }
 
