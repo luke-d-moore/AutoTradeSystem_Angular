@@ -80,6 +80,16 @@ export class TradingStrategiesService {
     );
   }
 
+  deleteStrategy(id: string): Observable<any> {
+    const deleteUrl = `${this.API_URL}/${id}`;
+    return this.http.delete(deleteUrl).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error(`Error deleting strategy with ID ${id}:`, error);
+        return of(null);
+      })
+    );
+  }
+
   postStrategy(strategy: Strategy): Observable<PostStrategyResponse> {
     return this.http.post<PostStrategyResponse>(this.API_URL, strategy).pipe(
       map(response => {

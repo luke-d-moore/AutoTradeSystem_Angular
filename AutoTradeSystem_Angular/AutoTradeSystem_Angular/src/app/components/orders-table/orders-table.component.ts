@@ -21,6 +21,7 @@ interface Order {
         <h2>Current Trading Strategies</h2>
         <p *ngIf="lastUpdated" > Last updated: {{ lastUpdated | date: 'mediumTime' }}</p>
         <p *ngIf="error" style = "color: red;"> Error: {{ error }}</p>
+        <p *ngIf="deleted" style = "color: green;">{{ deleted }}</p>
 
         <ng-container *ngIf="!loading" >
           <table class="orders-table" >
@@ -30,6 +31,7 @@ interface Order {
                 <th>Quantity</th>
                 <th>TradeAction</th>
                 <th>Threshold(%)</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -41,6 +43,15 @@ interface Order {
                 <td>{{order.quantity}}</td>
                 <td>{{order.tradeaction}}</td>
                 <td>{{order.threshold}}</td>
+                <td>
+                    <img
+                        [src]="deleteIconPath"
+                        alt="Delete order"
+                        class="delete-icon"
+                        (click)="handleDelete(order.id)"
+                        style="cursor: pointer;"
+                    />
+                </td>
               </tr>
             </tbody>
           </table>
@@ -56,14 +67,40 @@ export class OrdersTableComponent implements OnInit, OnDestroy {
   orders: Order[] = [];
   loading = true;
   error: string | null = null;
+  deleted: string | null = null; 
   lastUpdated: Date | null = null;
   private strategiesSubscription: Subscription | undefined;
+  private deleteSubscription: Subscription | undefined; 
 
   constructor(private strategiesService: TradingStrategiesService) { }
+
+  deleteIconPath = `delete-24.ico`;
+
+  handleDelete(orderId: string): void {
+    if (!window.confirm(`Are you sure you want to delete this strategy?`)) {
+      return;
+    }
+
+    this.error = null;
+    this.deleted = null;
+
+    this.deleteSubscription = this.strategiesService.deleteStrategy(orderId).subscribe({
+      next: () => {
+        this.deleted = `Successfully deleted strategy!`;
+        this.orders = this.orders.filter(order => order.id !== orderId);
+      },
+      error: (err) => {
+        console.error("Error deleting order:", err);
+        this.error = `Failed to delete strategy`;
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.strategiesSubscription = this.strategiesService.getStrategies().subscribe({
       next: (orders) => {
+        this.error = null;
+        this.deleted = null;
         this.orders = orders;
         this.loading = false;
         this.lastUpdated = new Date();
@@ -79,6 +116,9 @@ export class OrdersTableComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.strategiesSubscription) {
       this.strategiesSubscription.unsubscribe();
+    }
+    if (this.deleteSubscription) {
+      this.deleteSubscription.unsubscribe();
     }
   }
 }
