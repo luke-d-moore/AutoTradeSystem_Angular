@@ -28,9 +28,9 @@
   transition: background-color 0.3s ease;
 }
 
-/*  .order-form button:hover:not(:disabled) {
+  .order-form button:hover:not(:disabled) {
     background-color: #2980b9;
-  }*/
+  }
 
   .order-form button:disabled {
     background-color: #bdc3c7;
