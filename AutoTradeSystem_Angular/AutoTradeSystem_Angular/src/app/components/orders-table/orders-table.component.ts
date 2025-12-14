@@ -7,6 +7,7 @@ interface Order {
   id: string;
   ticker: string;
   quantity: number;
+  actionPrice: number;
   tradeaction: string;
   threshold: string;
 }
@@ -31,6 +32,7 @@ interface Order {
                 <th>Quantity</th>
                 <th>TradeAction</th>
                 <th>Threshold(%)</th>
+                <th>Action Price</th>
                 <th></th>
               </tr>
             </thead>
@@ -43,6 +45,7 @@ interface Order {
                 <td>{{order.quantity}}</td>
                 <td>{{order.tradeaction}}</td>
                 <td>{{order.threshold}}</td>
+                <td>{{order.actionPrice | currency:'USD':'symbol':'1.2-2' }}</td>
                 <td>
                     <img
                         [src]="deleteIconPath"

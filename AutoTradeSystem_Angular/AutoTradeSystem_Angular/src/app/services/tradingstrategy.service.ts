@@ -24,6 +24,7 @@ interface Order {
   id: string;
   ticker: string;
   quantity: number;
+  actionPrice: number;
   tradeaction: string;
   threshold: string;
 }
@@ -60,6 +61,7 @@ export class TradingStrategiesService {
         return Object.entries(response.TradingStrategies).map(([id, strategyDetails]) => {
           const strategy = strategyDetails.TradingStrategy;
           const originalPrice = strategyDetails.OriginalPrice;
+          const actionPrice = strategyDetails.ActionPrice;
           const threshold = originalPrice > 0
             ? (((strategyDetails.ActionPrice - originalPrice) / originalPrice) * 100).toFixed(2) + '%'
             : 'N/A';
@@ -70,6 +72,7 @@ export class TradingStrategiesService {
             quantity: strategy.Quantity,
             tradeaction: strategy.TradeAction === 0 ? 'Buy' : 'Sell',
             threshold: threshold,
+            actionPrice: actionPrice,
           };
         });
       }),
