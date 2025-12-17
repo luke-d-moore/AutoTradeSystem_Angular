@@ -30,6 +30,10 @@ import { TradingStrategiesService, Strategy, PostStrategyResponse } from '../../
           <label for="threshold">Threshold (%)</label>
           <input type="number" id="threshold" formControlName="threshold" required>
         </div>
+        <div class="form-field">
+          <label for="actionPrice">Action Price</label>
+          <input type="number" id="actionPrice" formControlName="actionPrice" required>
+        </div>
         <div class="form-actions">
           <button type="submit" [disabled]="orderForm.invalid">Submit Order</button>
         </div>
@@ -58,6 +62,7 @@ export class OrderFormComponent {
       amount: [null, [Validators.required, Validators.min(0)]],
       type: [0],
       threshold: [null, [Validators.required, Validators.min(0)]],
+      actionPrice: [null, [Validators.required, Validators.min(0)]],
     });
   }
 
@@ -72,6 +77,7 @@ export class OrderFormComponent {
         Quantity: formValues.amount, 
         TradeAction: formValues.type,
         PriceChange: formValues.threshold,
+        ActionPrice: formValues.actionPrice,
       };
 
       this.strategiesService.postStrategy(newStrategy).subscribe({

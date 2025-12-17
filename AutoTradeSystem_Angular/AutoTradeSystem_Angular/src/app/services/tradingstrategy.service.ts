@@ -34,6 +34,7 @@ export interface Strategy {
   Quantity: number;
   TradeAction: number;
   PriceChange: number;
+  ActionPrice: number;
 }
 
 export interface PostStrategyResponse {
