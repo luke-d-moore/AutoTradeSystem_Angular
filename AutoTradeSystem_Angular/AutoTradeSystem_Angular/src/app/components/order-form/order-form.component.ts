@@ -112,10 +112,20 @@ export class OrderFormComponent {
       this.strategiesService.postStrategy(newStrategy).subscribe({
         next: (res) => {
           this.successMessage = `Strategy Submitted Successfully`;
+          this.errorMessage = null;
+
           this.orderForm.reset({ type: 0, useSpecificPrice: true });
+
+          setTimeout(() => {
+            this.successMessage = null;
+          }, 3000);
         },
         error: (err) => {
           this.errorMessage = `Failed to submit Strategy`;
+          this.successMessage = null;
+          setTimeout(() => {
+            this.errorMessage = null;
+          }, 3000);
         }
       });
     }
