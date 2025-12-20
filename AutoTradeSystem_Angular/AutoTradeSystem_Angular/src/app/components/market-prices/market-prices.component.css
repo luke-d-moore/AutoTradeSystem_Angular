@@ -26,3 +26,13 @@
   background-color: #e6e6e6;
 }
 
+.price-up {
+  color: #28a745 !important;
+  font-weight: bold;
+}
+
+.price-down {
+  color: #dc3545 !important;
+  font-weight: bold;
+}
+

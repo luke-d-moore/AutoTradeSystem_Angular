@@ -32,7 +32,14 @@ export interface PriceData {
                   [class.even-row]="i % 2 === 0"
                   [class.odd-row]="i % 2 !== 0">
                   <td>{{ item[0] }}</td>
-                  <td>\${{ item[1] | number:'1.2-2' }}</td>
+                  <td>\${{ item[1] | number:'1.2-2' }}
+                  @let diff = getPriceDiff(item[0], item[1]);
+                  @if (diff !== null) {
+                  (<span [ngClass]="{'price-up': diff > 0, 'price-down': diff < 0}">
+                    {{ diff > 0 ? '+' : '' }}{{ diff | number:'1.2-2' }}
+                  </span>)
+                }
+                  </td>
                 </tr>
               }
             </tbody>
@@ -46,6 +53,7 @@ export class MarketPricesComponent implements OnInit, OnDestroy {
 
   error = signal<string | null>(null);
   priceEntries = signal<[string, number][]>([]);
+  previousPrices = signal<PriceData>({});
   lastUpdated: Date | null = null;
 
   constructor(private priceService: PriceService) { }
@@ -53,30 +61,34 @@ export class MarketPricesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const defaultPrices: PriceData = {};
 
-    // The outer timer drives the polling interval
     this.subscription = timer(0, 5000).pipe(
       switchMap(() => {
-        // Clear any previous error and set loading state before each new attempt
         this.error.set(null);
 
-        // This inner observable handles the API call and potential errors
         return this.priceService.getPrices().pipe(
           catchError(err => {
-            // Set the error signal to display the error message
             this.error.set(err.message || 'Failed to retrieve prices');
             console.log(err.message);
-            // Return the safe default value. The outer stream continues running.
             return NEVER;
           })
         );
       })
-      // We subscribe here to process the emissions from the stream
     ).subscribe(data => {
-      // This block executes for every successful response OR every default value returned after an error
-      this.priceEntries.set(Object.entries(data));
+      const currentEntriesObj = Object.fromEntries(this.priceEntries());
+      const hasChanged = JSON.stringify(currentEntriesObj) !== JSON.stringify(data);
+      if (hasChanged) {
+        this.previousPrices.set(currentEntriesObj);
+        this.priceEntries.set(Object.entries(data));
+      }
       this.lastUpdated = new Date();
     });
   }
+
+    getPriceDiff(ticker: string, currentPrice: number): number | null {
+      const prev = this.previousPrices()[ticker];
+      if (prev === undefined || prev === currentPrice) return null;
+      return currentPrice - prev;
+    }
 
   ngOnDestroy(): void {
     this.subscription?.unsubscribe();
