@@ -12,6 +12,7 @@ export interface PriceData {
   standalone: true,
   imports: [CommonModule],
   template: `
+  <div class="container">
     <section class="prices-section">
       <h2>Live Market Prices</h2>
       @if (error()) {
@@ -45,6 +46,7 @@ export interface PriceData {
             </tbody>
           </table>
     </section>
+    </div>
   `,
   styleUrl: './market-prices.component.css'
 })

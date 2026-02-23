@@ -2,3 +2,5 @@
 /AutoTradeSystem_Angular/.vs
 /AutoTradeSystem_Angular/AutoTradeSystem_Angular/.vscode
 /AutoTradeSystem_Angular/AutoTradeSystem_Angular/obj
+AutoTradeSystem_Angular/node_modules/
+AutoTradeSystem_Angular/package-lock.json

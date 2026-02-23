@@ -8,8 +8,9 @@ import { TradingStrategiesService, Strategy, PostStrategyResponse } from '../../
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   template: `
+  <div class= "container">
     <section class="form-section">
-      <h2>Add New Trading Strategy</h2>
+      <h2>Submit Trading Strategy</h2>
 
       <div [formGroup]="orderForm">
         <label class="switch">
@@ -25,24 +26,23 @@ import { TradingStrategiesService, Strategy, PostStrategyResponse } from '../../
           <input type="text" id="ticker" formControlName="ticker" required>
         </div>
         <div class="form-field">
-          <label for="amount">Amount</label>
-          <input type="number" id="amount" formControlName="amount" required>
-        </div>
-        <div class="form-field">
-          <label for="type">Type</label>
+          <label for="type">Trade Action</label>
           <select id="type" formControlName="type">
             <option [ngValue]="0">Buy</option>
             <option [ngValue]="1">Sell</option>
           </select>
         </div>
-        <div class="form-field" *ngIf="!orderForm.get('useSpecificPrice')?.value">
-          <label for="threshold">Threshold (%)</label>
-          <input type="number" id="threshold" formControlName="threshold">
-        </div>
-
         <div class="form-field" *ngIf="orderForm.get('useSpecificPrice')?.value">
           <label for="actionPrice">Action Price ($)</label>
           <input type="number" id="actionPrice" formControlName="actionPrice">
+        </div>
+        <div class="form-field" *ngIf="!orderForm.get('useSpecificPrice')?.value">
+          <label for="threshold">Price Change (%)</label>
+          <input type="number" id="threshold" formControlName="threshold">
+        </div>
+        <div class="form-field">
+          <label for="amount">Quantity</label>
+          <input type="number" id="amount" formControlName="amount" required>
         </div>
         <div class="form-actions">
           <button type="submit" [disabled]="orderForm.invalid">Submit Order</button>
@@ -55,6 +55,7 @@ import { TradingStrategiesService, Strategy, PostStrategyResponse } from '../../
         {{successMessage}}
       </div>
     </section>
+    </div>
   `,
   styleUrl: './order-form.component.css'
 })
