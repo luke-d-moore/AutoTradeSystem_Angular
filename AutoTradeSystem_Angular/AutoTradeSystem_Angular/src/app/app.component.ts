@@ -1,19 +1,31 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LayoutComponent } from './components/layout/layout.component';
 import { OrderFormComponent } from './components/order-form/order-form.component';
 import { OrdersTableComponent } from './components/orders-table/orders-table.component';
+import { MarketPricesComponent } from './components/market-prices/market-prices.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, LayoutComponent, OrderFormComponent, OrdersTableComponent],
+  imports: [CommonModule, OrderFormComponent, OrdersTableComponent, MarketPricesComponent],
   template: `
-    <app-layout>
-      <h1>AutoTradeSystem</h1>
-      <app-order-form/>
-      <app-orders-table/>
-    </app-layout>`
+  <div class="app-container">
+    <div class="content-wrapper">
+        <div class="left-section">
+            <div class="content-wrapper main-form">
+                <div class="left-section">
+                  <app-order-form/>
+                </div>
+                <div class="right-section">
+                  <app-market-prices/>
+                </div>
+            </div>
+        </div>
+        <div class="right-section">
+          <app-orders-table/>
+        </div>
+    </div>
+  </div>`
 })
 export class AppComponent {
   title = 'AutoTradeSystem';
