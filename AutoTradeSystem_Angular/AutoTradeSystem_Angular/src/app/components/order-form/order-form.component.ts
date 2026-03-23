@@ -1,8 +1,9 @@
-import { Component, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { TradingStrategiesService, Strategy, PostStrategyResponse } from '../../services/tradingstrategy.service';
 import { PriceService } from '../../services/price.service';
+import { interval, switchMap, Subscription, startWith } from 'rxjs';
  
 
 @Component({
@@ -64,11 +65,12 @@ import { PriceService } from '../../services/price.service';
   `,
   styleUrl: './order-form.component.css'
 })
-export class OrderFormComponent implements OnInit {
+export class OrderFormComponent implements OnInit, OnDestroy {
   orderForm: FormGroup;
   errorMessage: string | null = null;
   successMessage: string | null = null;
   tickers: string[] = [];
+  private tickerSubscription?: Subscription;
 
   constructor(
     private fb: FormBuilder,
@@ -92,14 +94,23 @@ export class OrderFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.priceService.getTickers().subscribe({
-      next: (tickers) => {
-        this.tickers = tickers;
-      },
-      error: (err) => {
-        console.error('Failed to load tickers:', err);
-      }
-    });
+    this.tickerSubscription = interval(5000)
+      .pipe(
+        startWith(0),
+        switchMap(() => this.priceService.getTickers())
+      )
+      .subscribe({
+        next: (tickers) => {
+          this.tickers = tickers;
+        },
+        error: (err) => {
+          console.error('Failed to load tickers:', err);
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.tickerSubscription?.unsubscribe();
   }
 
   private toggleFields(usePrice: boolean) {
