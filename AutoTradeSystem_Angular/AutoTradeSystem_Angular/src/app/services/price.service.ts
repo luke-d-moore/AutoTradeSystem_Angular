@@ -5,6 +5,10 @@ import { PriceData } from '../components/market-prices/market-prices.component';
 
 const API_URL = 'https://localhost:7250/api/Price/';
 
+export interface TickerResponse {
+  Tickers: string[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -17,9 +21,9 @@ export class PriceService {
       map(response => response.Prices)
     );
   }
-  getTickers(): Observable<PriceData> {
-    return this.http.get<{ Prices: PriceData }>(API_URL+'GetTickers').pipe(
-      map(response => response.Prices)
-    );
+getTickers(): Observable<string[]> {
+  return this.http.get<TickerResponse>(API_URL + 'GetTickers').pipe(
+    map(response => response.Tickers)
+  );
   }
 }
